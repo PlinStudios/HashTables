@@ -1,4 +1,7 @@
+#include <iostream>
+
 #include "LoadData.cpp"
+#include "chaining.cpp"
 
 int main(){
     OpenFile();
@@ -6,19 +9,16 @@ int main(){
     std::string user_id,user_screen_name;
     std::string Puser_id,Puser_screen_name;
 
-    //int count=0;
-    //int per=0;
-    //int pper=0;
-    while (ReadEntry(user_id,user_screen_name)){
-        /*count++;
-        per=count * 100 / 183370;
-        if (pper!=per){
-            pper=per;
-            std::cout << per << "% - ";
-            std::cout << user_id << ',' << user_screen_name << std::endl;
-        }
+    ChainHashMap chain = ChainHashMap<long long>(13);
 
-        Puser_id = user_id;
-        Puser_screen_name = user_screen_name;*/
+    while (ReadEntry(user_id,user_screen_name)){
+        long long uid = stoll(user_id);
+        
+        if (chain.contains(uid))
+            chain[uid]+=1;
+        else
+            chain[uid]=1;
     }
+
+    std::cout << chain[944465451727314944];
 }

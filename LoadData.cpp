@@ -1,4 +1,3 @@
-#include <iostream>
 #include <fstream>
 
 #define P_ID 5 //index del parametro user_id
@@ -10,7 +9,7 @@ void OpenFile(){
     //abre archivo
     file = std::ifstream("auspol2019.csv");
     if (!file.is_open()) {
-        std::cerr << "Error opening file!" << std::endl;
+        throw "Error opening file!";
         return;
     }
     //salta linea que describe parametros
