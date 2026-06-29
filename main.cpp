@@ -7,7 +7,6 @@ int main(){
     OpenFile();
 
     std::string user_id,user_screen_name;
-    std::string Puser_id,Puser_screen_name;
 
     ChainHashMap chain = ChainHashMap<long long>(13);
 
