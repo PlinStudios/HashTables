@@ -65,6 +65,7 @@ public:
         //crea el primer nodo
         if (node == nullptr){
             arr[dest] = new chain(key,0);
+            n++;
             return arr[dest]->value;
         }
         //recorre lista enlazada
@@ -82,6 +83,7 @@ public:
         //no encontro el nodo
         //crea uno nuevo
         node->next = new chain(key,0);
+        n++;
         return node->next->value;
     }
 
@@ -92,7 +94,7 @@ public:
         unsigned dest = hash(key);
 
         chain *node = arr[dest];
-        //crea el primer nodo
+        //el primer nodo
         if (node == nullptr){
             return false;
         }
@@ -110,8 +112,61 @@ public:
         }
     }
 
+    //remueve elemento pr key
+    //retorna true si el elemto se removio, false si no existe 
+    bool remove(K key) override {
+        //donde deberia estar
+        unsigned dest = hash(key);
+
+        chain *node = arr[dest];
+        //si el primer nodo es null, la clave no existe
+        if (node == nullptr){
+            return false;
+        }else{
+            //si es el primer nodo
+            if (node->key == key){
+                arr[dest] = node->next;
+                //apunta el nodo a null para destruirlo seguramente
+                node->next = nullptr;
+                delete node;
+                n--;
+                return true;
+            }
+        }
+        //recorre lista enlazada
+        chain *prevnode = node;
+        node = node->next;
+        if (node == nullptr) return false;
+        while (true)
+        {
+            if (node->key == key){
+                prevnode->next = node->next;
+                node->next = nullptr;
+                delete node;
+                n--;
+                return true;
+            }else
+                //si hay otro nodo continua
+                if (node->next){
+                    prevnode = node;
+                    node = node->next;
+                }
+                else
+                    return false;
+        }
+    }
+
     int size() override {return n;}
     int capacity() override {return M;}
+
+    std::string type() override {
+        return "Chaining";
+    } 
+    //espacio utilizado por la estructura en Bytes
+    unsigned memory_usage() override {
+        //tamano del map + M punteros + n nodos
+        return sizeof(ChainHashMap) + M*sizeof(chain*) + n*sizeof(chain);
+    }
 
     ~ChainHashMap(){
         delete[] arr;

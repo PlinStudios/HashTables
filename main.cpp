@@ -1,23 +1,50 @@
 #include <iostream>
+#include <fstream>
 
 #include "LoadData.cpp"
 #include "chaining.cpp"
 
-int main(){
+std::ofstream expfile;
+
+#include <chrono>
+void Experiment(Map<long long>& map, unsigned max_tweets){
     OpenFile();
 
     std::string user_id,user_screen_name;
+    unsigned n_tweet = 0;
 
-    ChainHashMap chain = ChainHashMap<long long>(13);
+    auto start = std::chrono::high_resolution_clock::now();
 
     while (ReadEntry(user_id,user_screen_name)){
+        if (n_tweet>=max_tweets) break;
+        n_tweet++;
+
+        //actualiza map
         long long uid = stoll(user_id);
-        
-        if (chain.contains(uid))
-            chain[uid]+=1;
+        if (map.contains(uid))
+            map[uid]+=1;
         else
-            chain[uid]=1;
+            map[uid]=1;
     }
 
-    std::cout << chain[944465451727314944];
+    auto end = std::chrono::high_resolution_clock::now();
+    auto time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+    expfile << n_tweet << ';' << map.type() << ';' << time  << ';' << map.memory_usage()  << ';' << map.loadFactor() << std::endl;
+}
+
+int main(){
+    expfile = std::ofstream("times.csv");
+    expfile << "n_tweet;estructura_de_datos;tiempo_de_ejecucion(us);memory_usage(B);load_factor" << std::endl;
+
+    for (int i=0; i<20; i++){
+        for (unsigned i=1; i<=18; i++){
+            ChainHashMap<long long>* chain = new ChainHashMap<long long>(25000);
+            Experiment(*chain,10000*i);
+            std::cout << (*chain)[944465451727314944] << std::endl;
+            delete chain;
+        }
+    }
+
+    return 0;
 }

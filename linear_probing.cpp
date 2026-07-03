@@ -66,6 +66,7 @@ public:
             //Crea la entrada en caso de que haya un puntero nulo, y devuelve cero
             if (entrada == nullptr){
                 arr[lp_dest] = new Entry(key,0,EMPTY);
+                n++;
                 return arr[lp_dest]->value;
             }
             //En caso de que encuentre una celda vacia, devuelve cero
@@ -110,6 +111,15 @@ public:
 
     int size() override {return n;}
     int capacity() override {return M;}
+
+    std::string type() override {
+        return "LinearProbing";
+    } 
+    //espacio utilizado por la estructura en Bytes
+    unsigned memory_usage() override {
+        //tamano del map + M punteros + n Entry
+        return sizeof(LinearProbingHashMap) + M*sizeof(Entry*) + n*sizeof(Entry);
+    }
 
     ~ChainHashMap(){
         delete[] arr;

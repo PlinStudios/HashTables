@@ -6,6 +6,14 @@
 std::ifstream file;
 
 void OpenFile(){
+    //si esta abierto reinicia
+    if (file.is_open()) {
+        file.seekg(0, std::ios::beg);
+        std::string line;
+        std::getline(file, line);
+        return;
+    }
+
     //abre archivo
     file = std::ifstream("auspol2019.csv");
     if (!file.is_open()) {
