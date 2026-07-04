@@ -14,7 +14,6 @@ public:
 
     //info para experimentos
     virtual std::string type() = 0;
-    virtual unsigned memory_usage() = 0;
 
     virtual ~Map() = default;
 };

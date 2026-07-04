@@ -161,11 +161,6 @@ public:
 
     std::string type() override {
         return "Chaining";
-    } 
-    //espacio utilizado por la estructura en Bytes
-    unsigned memory_usage() override {
-        //tamano del map + M punteros + n nodos
-        return sizeof(ChainHashMap) + M*sizeof(chain*) + n*sizeof(chain);
     }
 
     ~ChainHashMap(){

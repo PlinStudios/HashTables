@@ -114,11 +114,6 @@ public:
 
     std::string type() override {
         return "LinearProbing";
-    } 
-    //espacio utilizado por la estructura en Bytes
-    unsigned memory_usage() override {
-        //tamano del map + M punteros + n Entry
-        return sizeof(LinearProbingHashMap) + M*sizeof(Entry*) + n*sizeof(Entry);
     }
 
     ~ChainHashMap(){
