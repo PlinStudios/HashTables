@@ -9,6 +9,7 @@ std::ifstream file;
 void OpenFile(){
     //si esta abierto reinicia
     if (file.is_open()) {
+        file.clear();
         file.seekg(0, std::ios::beg);
         std::string line;
         std::getline(file, line);
