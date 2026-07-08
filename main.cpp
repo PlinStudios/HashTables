@@ -15,7 +15,7 @@
 #include "Maps/quadratic_probing.cpp"
 
 //cuantas veces se repite el experimento
-#define EXP_repeat 1
+#define EXP_repeat 20
 //cuantas veces se procesan los tweets
 #define EXP_count 19
 //cuantos tweets más se leen cada vez
