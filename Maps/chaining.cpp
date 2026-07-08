@@ -9,6 +9,7 @@ private:
         return k*p % M;
     }
     unsigned hash(std::string ks){
+        if (ks.empty()) return 0;
         unsigned k=ks[ks.length()-1];
         //acumulacion polinomial
         for (int i=ks.length()-2; i>=0; i--){
