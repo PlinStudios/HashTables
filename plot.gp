@@ -10,7 +10,7 @@ set style line 4 lc rgb '#2CA02C' lt 1 lw 2 pt 11 ps 1 # Linear Probing
 set style line 5 lc rgb '#D62728' lt 1 lw 2 pt 13 ps 1 # QuadraticProbing
 
 
-set output 'timehash.png'
+set output 'results/timehash.png'
 set title "Tiempo de ejecución vs cantidad de tweets (long long)" font "Arial,14,Bold"
 set grid xtics ytics ls 12 lc rgb '#dddddd' lt 1
 set xlabel "Cantidad de tweets (n\\_tweet)" font "Arial,11,Bold"
@@ -27,7 +27,7 @@ plot \
 
 
 
-set output 'timehash2.png'
+set output 'results/timehash2.png'
 set title "Tiempo de ejecución vs cantidad de tweets (std:string)" font "Arial,14,Bold"
 set grid xtics ytics ls 12 lc rgb '#dddddd' lt 1
 set xlabel "Cantidad de tweets (n\\_tweet)" font "Arial,11,Bold"
@@ -45,7 +45,7 @@ plot \
 
 
 
-set output 'spacehash.png'
+set output 'results/spacehash.png'
 set title "Memoria utilizada vs cantidad de tweets (long long)" font "Arial,14,Bold"
 set grid xtics ytics ls 12 lc rgb '#dddddd' lt 1
 set xlabel "Cantidad de tweets (n\\_tweet)" font "Arial,11,Bold"
@@ -54,14 +54,14 @@ set format x "%.0f"
 set format y "%.0f"
 set key left top box title "Estructuras de datos"
 plot \
-  'times.csv' using 1:(stringcolumn(2) eq "Control" ? $4 : NaN) title "Control" w lp ls 1, \
-  'times.csv' using 1:(stringcolumn(2)eq "STD" ? $4 : NaN) title "STD" w lp ls 2, \
-  'times.csv' using 1:(stringcolumn(2) eq "Chaining" ? $4 : NaN) title "Chaining" w lp ls 3, \
-  'times.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $4 : NaN) title "Linear Probing" w lp ls 4, \
-  'times.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $4 : NaN) title "Quadratic Probing" w lp ls 5
+  'results/timesll.csv' using 1:(stringcolumn(2) eq "Control" ? $4 : NaN) title "Control" w lp ls 1, \
+  'results/timesll.csv' using 1:(stringcolumn(2)eq "STD" ? $4 : NaN) title "STD" w lp ls 2, \
+  'results/timesll.csv' using 1:(stringcolumn(2) eq "Chaining" ? $4 : NaN) title "Chaining" w lp ls 3, \
+  'results/timesll.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $4 : NaN) title "Linear Probing" w lp ls 4, \
+  'results/timesll.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $4 : NaN) title "Quadratic Probing" w lp ls 5
 
 
-set output 'spacehash2.png'
+set output 'results/spacehash2.png'
 set title "Memoria utilizada vs cantidad de tweets (std:string)" font "Arial,14,Bold"
 set grid xtics ytics ls 12 lc rgb '#dddddd' lt 1
 set xlabel "Cantidad de tweets (n\\_tweet)" font "Arial,11,Bold"
@@ -70,9 +70,9 @@ set format x "%.0f"
 set format y "%.0f"
 set key left top box title "Estructuras de datos"
 plot \
-  'times2.csv' using 1:(stringcolumn(2) eq "Control" ? $4 : NaN) title "Control" w lp ls 1, \
-  'times2.csv' using 1:(stringcolumn(2)eq "STD" ? $4 : NaN) title "STD" w lp ls 2, \
-  'times2.csv' using 1:(stringcolumn(2) eq "Chaining" ? $4 : NaN) title "Chaining" w lp ls 3, \
-  'times2.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $4 : NaN) title "Linear Probing" w lp ls 4, \
-  'times2.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $4 : NaN) title "Quadratic Probing" w lp ls 5
+  'results/timesstr.csv' using 1:(stringcolumn(2) eq "Control" ? $4 : NaN) title "Control" w lp ls 1, \
+  'results/timesstr.csv' using 1:(stringcolumn(2)eq "STD" ? $4 : NaN) title "STD" w lp ls 2, \
+  'results/timesstr.csv' using 1:(stringcolumn(2) eq "Chaining" ? $4 : NaN) title "Chaining" w lp ls 3, \
+  'results/timesstr.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $4 : NaN) title "Linear Probing" w lp ls 4, \
+  'results/timesstr.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $4 : NaN) title "Quadratic Probing" w lp ls 5
 
