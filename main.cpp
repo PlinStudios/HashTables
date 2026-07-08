@@ -12,7 +12,7 @@
 #include "Maps/STD.cpp"
 #include "Maps/chaining.cpp"
 #include "Maps/linear_probing.cpp"
-//#include "Maps/quadratic_probing.cpp"
+#include "Maps/quadratic_probing.cpp"
 
 //cuantas veces se repite el experimento
 #define EXP_repeat 1
@@ -101,13 +101,13 @@ int main(){
         }
     }
     //probamos quadratic probing
-    /*for (int i=0; i<EXP_repeat; i++){
+    for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
             QuadraticProbingHashMap<long long>* quad = new QuadraticProbingHashMap<long long>(EXP_reserve);
             Experiment(*quad,EXP_step*i);
             delete quad;
         }
-    }*/
+    }
 
     return 0;
 }

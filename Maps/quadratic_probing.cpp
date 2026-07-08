@@ -38,7 +38,8 @@ private:
 
     Entry** arr;
 
-    int nextPowerOf2(int m) {
+    long long nextPowerOf2(int mm) {
+    long long m= (long long) mm;
     m-- ;
     m |= m >> 1 ;
     m |= m >> 2 ;
@@ -70,9 +71,9 @@ public:
         unsigned dest = hash(key);
         unsigned lp_dest;
         Entry* entrada;
-        int upper_limit = nextPowerOf2(M);
+        long long upper_limit = nextPowerOf2(M);
         //Se revisa todo el arreglo hasta encontrar un exito
-        for (int i = 0; i<upper_limit; i++){
+        for (long long i = 0; i<upper_limit; i++){
             lp_dest = (dest+(i+i*i)/2)%upper_limit;
             entrada = arr[lp_dest];
             //Crea la entrada en caso de que haya un puntero nulo, y devuelve cero
@@ -96,7 +97,7 @@ public:
         unsigned dest = hash(key);
         unsigned lp_dest;
         Entry* entrada;
-        int upper_limit = nextPowerOf2(M);
+        long long upper_limit = nextPowerOf2(M);
         //Se revisa todo el arreglo hasta encontrar un exito
         for (int i = 0; i<upper_limit; i++){
             lp_dest = (dest+(i+i*i)/2)%upper_limit;
