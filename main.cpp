@@ -65,6 +65,8 @@ void Experiment(Map<K>& map, unsigned max_tweets, size_t mem_before){
 }
 
 int main(){
+    OpenFile();
+
     expfile = std::ofstream("timesll.csv");
     expfile << "n_tweet;estructura_de_datos;tiempo_de_ejecucion(us);memory_usage(B);load_factor" << std::endl;
 
