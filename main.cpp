@@ -112,6 +112,8 @@ int main(){
 
 
 
+    expfile = std::ofstream("times2.csv");
+    expfile << "n_tweet;estructura_de_datos;tiempo_de_ejecucion(us);memory_usage(B);load_factor" << std::endl;
 
 
 
@@ -158,3 +160,7 @@ int main(){
 
     return 0;
 }
+
+
+
+// to do: experimentos de creación, graficos con python o gnuplot control? dividir por 10000 paraver tiempo de uno
