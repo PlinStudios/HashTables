@@ -109,5 +109,52 @@ int main(){
         }
     }
 
+
+
+
+
+
+
+     //probamos control
+    for (int i=0; i<EXP_repeat; i++){
+        for (unsigned i=1; i<=EXP_count; i++){
+            NullMap<std::string>* control = new NullMap<std::string>(EXP_reserve);
+            Experiment(*control,EXP_step*i);
+            delete control;
+        }
+    }
+    //probamos implementacion estandar
+    for (int i=0; i<EXP_repeat; i++){
+        for (unsigned i=1; i<=EXP_count; i++){
+            stdMap<std::string>* standar = new stdMap<std::string>(EXP_reserve);
+            Experiment(*standar,EXP_step*i);
+            delete standar;
+        }
+    }
+    //probamos chaining
+    for (int i=0; i<EXP_repeat; i++){
+        for (unsigned i=1; i<=EXP_count; i++){
+            ChainHashMap<std::string>* chain = new ChainHashMap<std::string>(EXP_reserve);
+            Experiment(*chain,EXP_step*i);
+            delete chain;
+        }
+    }
+    //probamos linear probing
+    for (int i=0; i<EXP_repeat; i++){
+        for (unsigned i=1; i<=EXP_count; i++){
+            LinearProbingHashMap<std::string>* line = new LinearProbingHashMap<std::string>(EXP_reserve);
+            Experiment(*line,EXP_step*i);
+            delete line;
+        }
+    }
+    //probamos quadratic probing
+    for (int i=0; i<EXP_repeat; i++){
+        for (unsigned i=1; i<=EXP_count; i++){
+            QuadraticProbingHashMap<std::string>* quad = new QuadraticProbingHashMap<std::string>(EXP_reserve);
+            Experiment(*quad,EXP_step*i);
+            delete quad;
+        }
+    }
+
     return 0;
 }
