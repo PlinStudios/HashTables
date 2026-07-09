@@ -1,6 +1,6 @@
 #include "Map.h"
 
-//HashMap implementado con Quadratic Probing
+//HashMap implementado con Double Hashing
 template<typename K>
 class DoubleHashingHashMap : public Map<K>{
 private:
@@ -11,7 +11,7 @@ private:
     }
     //Para la 2da funcion hash, usamos MAD con otro coeficiente
     unsigned hash2(unsigned k){
-        return k*p2 % M;
+        return 1+(k*p2 % M);
     }
     //Para strings (user_screen_name), usamos acumulación polinomial y MAD
     unsigned hash(std::string ks){
@@ -65,7 +65,7 @@ private:
     return m ;
 }
 public:
-    QuadraticProbingHashMap(unsigned capacity){
+    DoubleHashingHashMap(unsigned capacity){
         M = capacity;
         arr = new Entry*[M];
         for (unsigned i = 0; i < M; i++){
@@ -122,11 +122,11 @@ public:
             entrada = arr[lp_dest];
             //Crea la entrada en caso de que haya un puntero nulo, y devuelve cero
             if (entrada == nullptr){
-                return true
+                return false;
             }
             //si es que la llave si esté almacenada, se devuelve el valor correspondiente
             if (entrada->key == key){
-                return false;
+                return true;
             }
         }
         //Si revisó todo el arreglo y no encuentra el valor correspondiente, es porque no está almacenado
@@ -150,8 +150,17 @@ public:
                 Entry* entry = oldArray[i];
 
                 unsigned pos = hash(entry->key);
-                while (arr[pos] != nullptr) {
-                    pos = (pos + 1) % M;
+                unsigned h1 = hash(entry->key);
+                unsigned h2 = hash2(entry->key);
+
+                for (unsigned i = 0; i < M; i++) {
+                    unsigned pos = (h1 + i * h2) % M;
+
+                    if (arr[pos] == nullptr) {
+                        arr[pos] = new Entry(entry->key, entry->value);
+                        ++n;
+                        break;
+                    }
                 }
 
                 arr[pos] = new Entry(entry->key, entry->value);
