@@ -13,6 +13,7 @@
 #include "Maps/chaining.cpp"
 #include "Maps/linear_probing.cpp"
 #include "Maps/quadratic_probing.cpp"
+#include "Maps/double_hashing.cpp"
 
 //cuantas veces se repite el experimento
 #define EXP_repeat 20
@@ -35,14 +36,13 @@ inline void get_user(std::string& target, std::string& user_id, std::string& use
 
 #include <chrono>
 template<typename K>
-void Experiment(Map<K>& map, unsigned max_tweets, size_t mem_before){
+void Experiment(Map<K>& map, unsigned max_tweets){
     OpenFile();
 
     std::string user_id,user_screen_name;
     unsigned n_tweet = 0;
 
     auto start = std::chrono::high_resolution_clock::now();
-    //size_t mem_before = memory_usage();
 
     while (ReadEntry(user_id,user_screen_name)){
         if (n_tweet>=max_tweets) break;
@@ -61,7 +61,7 @@ void Experiment(Map<K>& map, unsigned max_tweets, size_t mem_before){
     size_t mem_after = memory_usage();
     auto time = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-    expfile << n_tweet << ';' << map.type() << ';' << time  << ';' << mem_after-mem_before  << ';' << map.loadFactor() << std::endl;
+    expfile << n_tweet << ';' << map.type() << ';' << time  << ';' << mem_after  << ';' << map.loadFactor() << std::endl;
 }
 
 int main(){
@@ -73,46 +73,49 @@ int main(){
     //probamos control
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             NullMap<long long>* control = new NullMap<long long>(EXP_reserve);
-            Experiment(*control,EXP_step*i,mem_before);
+            Experiment(*control,EXP_step*i);
             delete control;
         }
     }
     //probamos implementacion estandar
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             stdMap<long long>* standar = new stdMap<long long>(EXP_reserve);
-            Experiment(*standar,EXP_step*i,mem_before);
+            Experiment(*standar,EXP_step*i);
             delete standar;
         }
     }
     //probamos chaining
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             ChainHashMap<long long>* chain = new ChainHashMap<long long>(EXP_reserve);
-            Experiment(*chain,EXP_step*i,mem_before);
+            Experiment(*chain,EXP_step*i);
             delete chain;
         }
     }
     //probamos linear probing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             LinearProbingHashMap<long long>* line = new LinearProbingHashMap<long long>(EXP_reserve);
-            Experiment(*line,EXP_step*i,mem_before);
+            Experiment(*line,EXP_step*i);
             delete line;
         }
     }
     //probamos quadratic probing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             QuadraticProbingHashMap<long long>* quad = new QuadraticProbingHashMap<long long>(EXP_reserve);
-            Experiment(*quad,EXP_step*i,mem_before);
+            Experiment(*quad,EXP_step*i);
             delete quad;
+        }
+    }
+    //probamos double hashing
+    for (int i=0; i<EXP_repeat; i++){
+        for (unsigned i=1; i<=EXP_count; i++){
+            DoubleHashingHashMap<long long>* doubl = new DoubleHashingHashMap<long long>(EXP_reserve);
+            Experiment(*doubl,EXP_step*i);
+            delete doubl;
         }
     }
 
@@ -128,46 +131,49 @@ int main(){
      //probamos control
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             NullMap<std::string>* control = new NullMap<std::string>(EXP_reserve);
-            Experiment(*control,EXP_step*i,mem_before);
+            Experiment(*control,EXP_step*i);
             delete control;
         }
     }
     //probamos implementacion estandar
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             stdMap<std::string>* standar = new stdMap<std::string>(EXP_reserve);
-            Experiment(*standar,EXP_step*i,mem_before);
+            Experiment(*standar,EXP_step*i);
             delete standar;
         }
     }
     //probamos chaining
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             ChainHashMap<std::string>* chain = new ChainHashMap<std::string>(EXP_reserve);
-            Experiment(*chain,EXP_step*i,mem_before);
+            Experiment(*chain,EXP_step*i);
             delete chain;
         }
     }
     //probamos linear probing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             LinearProbingHashMap<std::string>* line = new LinearProbingHashMap<std::string>(EXP_reserve);
-            Experiment(*line,EXP_step*i,mem_before);
+            Experiment(*line,EXP_step*i);
             delete line;
         }
     }
     //probamos quadratic probing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            size_t mem_before = memory_usage();
             QuadraticProbingHashMap<std::string>* quad = new QuadraticProbingHashMap<std::string>(EXP_reserve);
-            Experiment(*quad,EXP_step*i,mem_before);
+            Experiment(*quad,EXP_step*i);
             delete quad;
+        }
+    }
+    //probamos double hashing
+    for (int i=0; i<EXP_repeat; i++){
+        for (unsigned i=1; i<=EXP_count; i++){
+            DoubleHashingHashMap<std::string>* doubl = new DoubleHashingHashMap<long long>(EXP_reserve);
+            Experiment(*doubl,EXP_step*i);
+            delete doubl;
         }
     }
 
