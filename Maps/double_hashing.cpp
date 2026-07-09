@@ -9,9 +9,9 @@ private:
     unsigned hash(unsigned k){
         return k*p % M;
     }
-    //Para la 2da funcion hash, usamos MAD con otro coeficiente, pero sumandole uno para asegurarnos de que la funcion pueda avanzar
+    //Para la 2da funcion hash, usamos un paso que siempre sea distinto de cero y coprimo con M
     unsigned hash2(unsigned k){
-        return 1+(k*p2 % M);
+        return 1 + (k % (M - 1));
     }
     //Para strings (user_screen_name), usamos acumulación polinomial y MAD
     unsigned hash(std::string ks){
@@ -36,7 +36,11 @@ private:
     unsigned n=0;
     unsigned M;
     unsigned p;
-    unsigned p2;
+
+    void updateHashParams(){
+        p = 2147483647;
+        if (M == p) p = 2147483629;
+    }
 
     //Usamos struct de entrada, almacena llave generica y el valor entero
 
@@ -51,52 +55,50 @@ private:
     };
 
     Entry** arr;
+    //Se añade una funcion para calcular el proximo número primo, pues eso es un requerimiento del double hashing
+    unsigned nextPrime(unsigned n) {
+        if (n <= 1) return 2;
+        if (n % 2 == 0) ++n;
 
-    long long nextPowerOf2(int mm) {
-    long long m= (long long) mm;
-    m-- ;
-    m |= m >> 1 ;
-    m |= m >> 2 ;
-    m |= m >> 4 ;
-    m |= m >> 8 ;
-    m |= m >> 16 ;
-    m |= m >> 32 ;
-    m++ ;
-    return m ;
-}
+        while (true) {
+            bool prime = true;
+            for (unsigned i = 3; i * i <= n; i += 2) {
+                if (n % i == 0) {
+                    prime = false;
+                    break;
+                }
+            }
+            if (prime) return n;
+            n += 2;
+        }
+    }
+
 public:
     DoubleHashingHashMap(unsigned capacity){
-        M = capacity;
+        M = nextPrime(capacity);
         arr = new Entry*[M];
         for (unsigned i = 0; i < M; i++){
             arr[i] = nullptr;
         }
-        
-        //numero primo usado en la funcion hash
-        //se asegura que no sea igual a M
-        p = 2147483647;
-        if (M==p) p=2147483629;
-        p2 = 761633;
-        if (M==p2) p2= 762257;
+
+        updateHashParams();
     }
 
     //Para acceder a elemento
     int& operator[](K key) override {
-        if (((double)n)/M>=0.7) rehash();
         //Usamos funcion hash para tener idx de donde revisar
+        if (((double)n)/M >= 0.7) rehash();
+
         unsigned dest = hash(key);
         unsigned dest_hash2 = hash2(key);
-        unsigned lp_dest;
-        Entry* entrada;
-        //Se revisa todo el arreglo hasta encontrar un exito
-        //Se realiza el ciclo de 0 hasta M, como aparecen en los apuntes de clases de diccionarios
-        for (long long i = 0; i<=M; i++){
-            lp_dest = (dest + dest_hash2*i)%M;
-            entrada = arr[lp_dest];
-            //Crea la entrada en caso de que haya un puntero nulo, y devuelve cero
-            if (entrada == nullptr){
-                arr[lp_dest] = new Entry(key,0);
-                n++;
+
+        for (unsigned i = 0; i < M; ++i) {
+            unsigned lp_dest = (dest + dest_hash2 * i) % M;
+            Entry* entrada = arr[lp_dest];
+
+            if (entrada == nullptr) {
+                arr[lp_dest] = new Entry(key, 0);
+                ++n;
                 return arr[lp_dest]->value;
             }
             //si es que la llave si esté almacenada, se devuelve el valor correspondiente
@@ -105,23 +107,19 @@ public:
             }
         }
         //Este caso es extremadamente improbable que ocurra, pero es posible que el double hashing solo revise casillas ya ocupadas
-        throw std::out_of_range("Double Hashing did not find value");
+        throw std::out_of_range("Double Hashing no encontro una casilla disponible");
     }
 
     //Verifica si key esta presente, misma estructura de [] pero retorna bool
     bool contains(K key) override {
-        //Usamos funcion hash para tener idx de donde revisar
         unsigned dest = hash(key);
         unsigned dest_hash2 = hash2(key);
-        unsigned lp_dest;
-        Entry* entrada;
-        //Se revisa todo el arreglo hasta encontrar un exito
-        //Se realiza el ciclo de 0 hasta M, como aparecen en los apuntes de clases de diccionarios
-        for (long long i = 0; i<=M; i++){
-            lp_dest = (dest + dest_hash2*i)%M;
-            entrada = arr[lp_dest];
-            //Crea la entrada en caso de que haya un puntero nulo, y devuelve cero
-            if (entrada == nullptr){
+
+        for (unsigned i = 0; i < M; ++i) {
+            unsigned lp_dest = (dest + dest_hash2 * i) % M;
+            Entry* entrada = arr[lp_dest];
+
+            if (entrada == nullptr) {
                 return false;
             }
             //si es que la llave si esté almacenada, se devuelve el valor correspondiente
@@ -137,8 +135,9 @@ public:
         Entry** oldArray = arr;
         unsigned oldCapacity = M;
 
-        // Aumentar la capacidad
-        M *= 2;
+        // Aumentar la capacidad con un tamaño primo para mantener el doble hashing válido
+        M = nextPrime(oldCapacity * 2);
+        updateHashParams();
 
         // Crear el nuevo arreglo
         arr = new Entry*[M];
@@ -149,7 +148,7 @@ public:
         // Reiniciar el número de elementos
         n = 0;
 
-        // Reinsertar todos los elementos
+        // Reinsertar todos los elementos usando la misma secuencia de doble hashing
         for (unsigned i = 0; i < oldCapacity; i++) {
             if (oldArray[i] != nullptr) {
                 Entry* entry = oldArray[i];
@@ -157,14 +156,20 @@ public:
                 unsigned h1 = hash(entry->key);
                 unsigned h2 = hash2(entry->key);
 
+                bool inserted = false;
                 for (unsigned j = 0; j < M; j++) {
                     unsigned pos = (h1 + j * h2) % M;
 
                     if (arr[pos] == nullptr) {
                         arr[pos] = new Entry(entry->key, entry->value);
                         n++;
+                        inserted = true;
                         break;
                     }
+                }
+
+                if (!inserted) {
+                    throw std::out_of_range("Double Hashing rehash no pudo agregar un elemento");
                 }
 
                 delete entry;
