@@ -1,4 +1,4 @@
-## codigo hecho con gemini
+// codigo hecho con gemini
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -6,8 +6,9 @@
 #include <map>
 #include <string>
 
-// Función auxiliar para calcular el costo marginal leyendo los archivos ya promediados
-void calcularCostoMarginal(const std::string& ruta_entrada, const std::string& ruta_salida, const std::string& nombre_columna_valor) {
+// Función auxiliar para calcular el costo marginal leyendo los archivos ya netos (tiempo y memoria juntos)
+// columna_objetivo: 3 para tiempo_neto, 4 para memoria_neto
+void calcularCostoMarginal(const std::string& ruta_entrada, const std::string& ruta_salida, const std::string& nombre_columna_valor, int columna_objetivo) {
     std::ifstream archivo_in(ruta_entrada);
     if (!archivo_in.is_open()) {
         std::cerr << "Error al abrir el archivo de entrada: " << ruta_entrada << std::endl;
@@ -38,14 +39,17 @@ void calcularCostoMarginal(const std::string& ruta_entrada, const std::string& r
 
         int n_tweet;
         std::string estructura;
-        double valor_actual;
-        double desviacion; // Se lee pero no la necesitamos para este cálculo
+        double tiempo_neto;
+        double memoria_neto;
 
-        // Parsear las 4 columnas del archivo estadístico tradicional
+        // Parsear las 4 columnas del nuevo archivo neto consolidado
         std::getline(ss, token, ';'); n_tweet = std::stoi(token);
         std::getline(ss, estructura, ';');
-        std::getline(ss, token, ';'); valor_actual = std::stod(token);
-        std::getline(ss, token, ';'); desviacion = std::stod(token);
+        std::getline(ss, token, ';'); tiempo_neto = std::stod(token);
+        std::getline(ss, token, ';'); memoria_neto = std::stod(token);
+
+        // Seleccionar el valor objetivo según la columna solicitada
+        double valor_actual = (columna_objetivo == 3) ? tiempo_neto : memoria_neto;
 
         double costo_marginal = 0.0;
 
@@ -69,26 +73,31 @@ void calcularCostoMarginal(const std::string& ruta_entrada, const std::string& r
 }
 
 int main() {
-    std::cout << "Procesando archivos incrementales desde fuentes estadísticas..." << std::endl;
+    std::cout << "Procesando archivos incrementales desde fuentes netas..." << std::endl;
 
-
-    calcularCostoMarginal("results/tiempos_estadisticos.csv", 
+    // --- GRUPO 1: USER_ID (timesll_neto.csv) ---
+    // Columna 3: tiempo_neto
+    calcularCostoMarginal("results/timesll_neto.csv", 
                           "results/tiempos_incrementales1.csv", 
-                          "promedio_tiempo");
+                          "tiempo_neto", 3);
 
-    calcularCostoMarginal("results/memoria_estadistica.csv", 
+    // Columna 4: memoria_neto
+    calcularCostoMarginal("results/timesll_neto.csv", 
                           "results/memoria_incremental1.csv", 
-                          "promedio_memoria");
+                          "memoria_neto", 4);
 
 
-    calcularCostoMarginal("results/tiempos_estadisticos2.csv", 
+    // --- GRUPO 2: USER_SCREEN_NAME (timesstr_neto.csv) ---
+    // Columna 3: tiempo_neto
+    calcularCostoMarginal("results/timesstr_neto.csv", 
                           "results/tiempos_incrementales2.csv", 
-                          "promedio_tiempo");
+                          "tiempo_neto", 3);
 
-    calcularCostoMarginal("results/memoria_estadistica2.csv", 
+    // Columna 4: memoria_neto
+    calcularCostoMarginal("results/timesstr_neto.csv", 
                           "results/memoria_incremental2.csv", 
-                          "promedio_memoria");
+                          "memoria_neto", 4);
 
-
+    std::cout << "¡Procesamiento incremental completado con éxito!" << std::endl;
     return 0;
 }

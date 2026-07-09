@@ -1,3 +1,4 @@
+#codigo parcialmente hecho con gemini
 # Configuración de salida
 set terminal pngcairo size 1000,800 enhanced font 'Verdana,10'
 set datafile separator ";"
@@ -25,8 +26,6 @@ set key left top box title "Estructuras de datos"
 # Columna 3: Y (promedio)
 # Columna 4: Delta (desviación estándar)
 plot \
-  'results/tiempos_estadisticos.csv' using 1:(stringcolumn(2) eq "Control" ? $3 : NaN) title "Control" w linespoints ls 1, \
-  'results/tiempos_estadisticos.csv' using 1:(stringcolumn(2) eq "Control" ? $3 : NaN):4 notitle w errorbars ls 1, \
   'results/tiempos_estadisticos.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN) title "STD" w linespoints ls 2, \
   'results/tiempos_estadisticos.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN):4 notitle w errorbars ls 2, \
   'results/tiempos_estadisticos.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN) title "Chaining" w linespoints ls 3, \
@@ -53,9 +52,7 @@ set key left top box title "Estructuras de datos"
 # Columna 3: Y (promedio)
 # Columna 4: Delta (desviación estándar)
 plot \
-  'results/memoria_estadistica.csv' using 1:(stringcolumn(2) eq "Control" ? $3 : NaN) title "Control" w linespoints ls 1, \
-  'results/memoria_estadistica.csv' using 1:(stringcolumn(2) eq "Control" ? $3 : NaN):4 notitle w errorbars ls 1, \
-  'results/memoria_estadistica.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN) title "STD" w linespoints ls 2, \
+ 'results/memoria_estadistica.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN) title "STD" w linespoints ls 2, \
   'results/memoria_estadistica.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN):4 notitle w errorbars ls 2, \
   'results/memoria_estadistica.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN) title "Chaining" w linespoints ls 3, \
   'results/memoria_estadistica.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN):4 notitle w errorbars ls 3, \
@@ -83,13 +80,11 @@ set key left top box title "Estructuras de datos"
 # Columna 3: Y (promedio)
 # Columna 4: Delta (desviación estándar)
 plot \
-  'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "Control" ? $3 : NaN) title "Control" w linespoints ls 1, \
-  'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "Control" ? $3 : NaN):4 notitle w errorbars ls 1, \
   'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN) title "STD" w linespoints ls 2, \
   'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN):4 notitle w errorbars ls 2, \
   'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN) title "Chaining" w linespoints ls 3, \
   'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN):4 notitle w errorbars ls 3, \
-  #'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $3 : NaN) title "Linear Probing" w linespoints ls 4, \
+  'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $3 : NaN) title "Linear Probing" w linespoints ls 4, \
   'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $3 : NaN):4 notitle w errorbars ls 4, \
   'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $3 : NaN) title "Quadratic Probing" w linespoints ls 5, \
   'results/tiempos_estadisticos2.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $3 : NaN):4 notitle w errorbars ls 5, \
@@ -111,13 +106,11 @@ set key left top box title "Estructuras de datos"
 # Columna 3: Y (promedio)
 # Columna 4: Delta (desviación estándar)
 plot \
-  'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "Control" ? $3 : NaN) title "Control" w linespoints ls 1, \
-  'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "Control" ? $3 : NaN):4 notitle w errorbars ls 1, \
-  'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN) title "STD" w linespoints ls 2, \
+ 'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN) title "STD" w linespoints ls 2, \
   'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "STD" ? $3 : NaN):4 notitle w errorbars ls 2, \
   'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN) title "Chaining" w linespoints ls 3, \
   'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN):4 notitle w errorbars ls 3, \
-  #'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $3 : NaN) title "Linear Probing" w linespoints ls 4, \
+  'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $3 : NaN) title "Linear Probing" w linespoints ls 4, \
   'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $3 : NaN):4 notitle w errorbars ls 4, \
   'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $3 : NaN) title "Quadratic Probing" w linespoints ls 5, \
   'results/memoria_estadistica2.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $3 : NaN):4 notitle w errorbars ls 5, \
