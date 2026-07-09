@@ -67,7 +67,7 @@ void Experiment(Map<K>& map, unsigned max_tweets, size_t mem_before){
 int main(){
     OpenFile();
 
-    expfile = std::ofstream("timesll.csv");
+    expfile = std::ofstream("results/timesll.csv");
     expfile << "n_tweet;estructura_de_datos;tiempo_de_ejecucion(us);memory_usage(B);load_factor" << std::endl;
 
     //probamos control
@@ -120,7 +120,7 @@ int main(){
 
     //abrimos a un archivo distinto para pruebas en string
     expfile.close();
-    expfile = std::ofstream("timesstr.csv");
+    expfile = std::ofstream("results/timesstr.csv");
     expfile << "n_tweet;estructura_de_datos;tiempo_de_ejecucion(us);memory_usage(B);load_factor" << std::endl;
 
 
