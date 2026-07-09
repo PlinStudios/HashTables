@@ -149,7 +149,6 @@ public:
             if (oldArray[i] != nullptr) {
                 Entry* entry = oldArray[i];
 
-                unsigned pos = hash(entry->key);
                 unsigned h1 = hash(entry->key);
                 unsigned h2 = hash2(entry->key);
 
