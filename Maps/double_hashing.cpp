@@ -137,39 +137,40 @@ public:
         Entry** oldArray = arr;
         unsigned oldCapacity = M;
 
+        // Aumentar la capacidad
         M *= 2;
-        n = 0;
 
+        // Crear el nuevo arreglo
         arr = new Entry*[M];
-        for (unsigned i = 0; i < M; ++i) {
+        for (unsigned i = 0; i < M; i++) {
             arr[i] = nullptr;
         }
 
-        for (unsigned i = 0; i < oldCapacity; ++i) {
+        // Reiniciar el número de elementos
+        n = 0;
+
+        // Reinsertar todos los elementos
+        for (unsigned i = 0; i < oldCapacity; i++) {
             if (oldArray[i] != nullptr) {
                 Entry* entry = oldArray[i];
 
                 unsigned h1 = hash(entry->key);
                 unsigned h2 = hash2(entry->key);
 
-                for (unsigned i = 0; i < M; i++) {
-                    unsigned pos = (h1 + i * h2) % M;
+                for (unsigned j = 0; j < M; j++) {
+                    unsigned pos = (h1 + j * h2) % M;
 
                     if (arr[pos] == nullptr) {
                         arr[pos] = new Entry(entry->key, entry->value);
-                        ++n;
+                        n++;
                         break;
                     }
                 }
 
-                arr[pos] = new Entry(entry->key, entry->value);
-                ++n;
+                delete entry;
             }
         }
 
-        for (unsigned i = 0; i < oldCapacity; ++i) {
-            delete oldArray[i];
-        }
         delete[] oldArray;
     }
 
