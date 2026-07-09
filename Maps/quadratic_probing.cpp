@@ -38,21 +38,26 @@ private:
 
     Entry** arr;
 
-    long long nextPowerOf2(int mm) {
-    long long m= (long long) mm;
-    m-- ;
-    m |= m >> 1 ;
-    m |= m >> 2 ;
-    m |= m >> 4 ;
-    m |= m >> 8 ;
-    m |= m >> 16 ;
-    m |= m >> 32 ;
-    m++ ;
-    return m ;
-}
+    unsigned nextPrime(unsigned n) {
+        if (n <= 1) return 2;
+        if (n % 2 == 0) ++n;
+
+        while (true) {
+            bool prime = true;
+            for (unsigned i = 3; i * i <= n; i += 2) {
+                if (n % i == 0) {
+                    prime = false;
+                    break;
+                }
+            }
+            if (prime) return n;
+            n += 2;
+        }
+    }
+
 public:
     QuadraticProbingHashMap(unsigned capacity){
-        M = capacity;
+        M = nextPrime(capacity);
         arr = new Entry*[M];
         for (unsigned i = 0; i < M; i++){
             arr[i] = nullptr;
@@ -69,46 +74,37 @@ public:
         if (((double)n)/M>=0.7) rehash();
         //Usamos funcion hash para tener idx de donde revisar
         unsigned dest = hash(key);
-        unsigned lp_dest;
-        Entry* entrada;
-        long long upper_limit = nextPowerOf2(M);
-        //Se revisa todo el arreglo hasta encontrar un exito
-        for (long long i = 0; i<upper_limit; i++){
-            lp_dest = (dest+(i+i*i)/2)%upper_limit;
-            entrada = arr[lp_dest];
-            //Crea la entrada en caso de que haya un puntero nulo, y devuelve cero
-            if (entrada == nullptr){
-                arr[lp_dest] = new Entry(key,0);
-                n++;
+        for (unsigned i = 0; i < M; ++i) {
+            unsigned lp_dest = (dest + (i + i * i) / 2) % M;
+            Entry* entrada = arr[lp_dest];
+
+            if (entrada == nullptr) {
+                arr[lp_dest] = new Entry(key, 0);
+                ++n;
                 return arr[lp_dest]->value;
             }
-            //si es que la llave si esté almacenada, se devuelve el valor correspondiente
-            if (entrada->key == key){
+
+            if (entrada->key == key) {
                 return entrada->value;
             }
         }
         //Este caso es extremadamente improbable que ocurra, pero es posible que el probing cuadratico solo revisa casillas ya ocupadas
-        throw std::out_of_range("Quadratic Probing did not find value");
+        throw std::out_of_range("Quadratic Probing no encontro una casilla disponible");
     }
 
     //Verifica si key esta presente, misma estructura de [] pero retorna bool
     bool contains(K key) override {
         //Usamos funcion hash para tener idx de donde revisar
         unsigned dest = hash(key);
-        unsigned lp_dest;
-        Entry* entrada;
-        long long upper_limit = nextPowerOf2(M);
-        //Se revisa todo el arreglo hasta encontrar un exito
-        for (int i = 0; i<upper_limit; i++){
-            lp_dest = (dest+(i+i*i)/2)%upper_limit;
-            if (lp_dest>=M) continue;
-            entrada = arr[lp_dest];
-            //Si encuentra en una celda un puntero nulo, es equivalente a encontrar una celda vacia, devuelve falso
-            if (entrada == nullptr){
+        for (unsigned i = 0; i < M; ++i) {
+            unsigned lp_dest = (dest + (i + i * i) / 2) % M;
+            Entry* entrada = arr[lp_dest];
+
+            if (entrada == nullptr) {
                 return false;
             }
-            //si es que el elemento si está almacenado, devuelve verdadero
-            if (entrada->key == key){
+
+            if (entrada->key == key) {
                 return true;
             }
         }
@@ -120,33 +116,32 @@ public:
         Entry** oldArray = arr;
         unsigned oldCapacity = M;
 
-        M *= 2;
+        M = nextPrime(oldCapacity * 2);
         n = 0;
         arr = new Entry*[M];
-        int j=0;
-        long long upper_limit = nextPowerOf2(M);
         for (unsigned i = 0; i < M; ++i) {
             arr[i] = nullptr;
         }
 
-        //Para rellenar el nuevo array, replicamos como funcionaria insertar una a una las llaves de vuelta con quadratic probing de Geek4Geeks
         for (unsigned i = 0; i < oldCapacity; ++i) {
             if (oldArray[i] != nullptr) {
                 Entry* entry = oldArray[i];
 
-                unsigned pos = hash(entry->key);
-                unsigned useful_pos = pos;
-                while (arr[useful_pos] != nullptr) {
-                    j++;
-                    useful_pos = (pos+(j+j*j)/2)%upper_limit;
-                    while (useful_pos>=M){         
-                        j++;
-                        useful_pos = (pos+(j+j*j)/2)%upper_limit;
+                unsigned dest = hash(entry->key);
+                bool inserted = false;
+                for (unsigned j = 0; j < M; ++j) {
+                    unsigned pos = (dest + (j + j * j) / 2) % M;
+                    if (arr[pos] == nullptr) {
+                        arr[pos] = new Entry(entry->key, entry->value);
+                        ++n;
+                        inserted = true;
+                        break;
                     }
                 }
 
-                arr[pos] = new Entry(entry->key, entry->value);
-                ++n;
+                if (!inserted) {
+                    throw std::out_of_range("Quadratic probing rehash no pudo colocar un elemento");
+                }
             }
         }
 
