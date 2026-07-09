@@ -171,7 +171,7 @@ int main(){
     //probamos double hashing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
-            DoubleHashingHashMap<std::string>* doubl = new DoubleHashingHashMap<long long>(EXP_reserve);
+            DoubleHashingHashMap<std::string>* doubl = new DoubleHashingHashMap<std::string>(EXP_reserve);
             Experiment(*doubl,EXP_step*i);
             delete doubl;
         }
