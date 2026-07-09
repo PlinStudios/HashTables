@@ -1,6 +1,6 @@
 #include "Map.h"
 
-//HashMap implementado con Quadratic Probing
+//HashMap implementado con DoubleHashing Probing
 template<typename K>
 class DoubleHashingHashMap : public Map<K>{
 private:
@@ -65,7 +65,7 @@ private:
     return m ;
 }
 public:
-    QuadraticProbingHashMap(unsigned capacity){
+    DoubleHashingHashMap(unsigned capacity){
         M = capacity;
         arr = new Entry*[M];
         for (unsigned i = 0; i < M; i++){
@@ -122,7 +122,7 @@ public:
             entrada = arr[lp_dest];
             //Crea la entrada en caso de que haya un puntero nulo, y devuelve cero
             if (entrada == nullptr){
-                return true
+                return true;
             }
             //si es que la llave si esté almacenada, se devuelve el valor correspondiente
             if (entrada->key == key){
