@@ -8,6 +8,7 @@ set style line 2 lc rgb '#B2ABD2' lt 1 lw 2 pt 5 ps 1  # STD
 set style line 3 lc rgb '#5E3C99' lt 1 lw 2 pt 9 ps 1  # Chaining
 set style line 4 lc rgb '#2CA02C' lt 1 lw 2 pt 11 ps 1 # Linear Probing
 set style line 5 lc rgb '#D62728' lt 1 lw 2 pt 13 ps 1 # QuadraticProbing
+set style line 5 lc rgb '#5327d6' lt 1 lw 2 pt 3 ps 1 # DoubleHashing
 
 
 set output 'results/timehash.png'
@@ -24,7 +25,8 @@ plot \
   'results/timesll.csv' using 1:(stringcolumn(2)eq "STD" ? $3 : NaN) smooth unique title "STD" w lp ls 2, \
   'results/timesll.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN) smooth unique title "Chaining" w lp ls 3, \
   'results/timesll.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $3 : NaN) smooth unique title "Linear Probing" w lp ls 4, \
-  'results/timesll.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $3 : NaN) smooth unique title "Quadratic Probing" w lp ls 5
+  'results/timesll.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $3 : NaN) smooth unique title "Quadratic Probing" w lp ls 5, \
+  'results/timesll.csv' using 1:(stringcolumn(2) eq "DoubleHashing" ? $3 : NaN) smooth unique title "Double Hashing" w lp ls 6
 
 
 
@@ -42,7 +44,8 @@ plot \
   'results/timesstr.csv' using 1:(stringcolumn(2)eq "STD" ? $3 : NaN) smooth unique title "STD" w lp ls 2, \
   'results/timesstr.csv' using 1:(stringcolumn(2) eq "Chaining" ? $3 : NaN) smooth unique title "Chaining" w lp ls 3, \
   'results/timesstr.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $3 : NaN) smooth unique title "Linear Probing" w lp ls 4, \
-  'results/timesstr.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $3 : NaN) smooth unique title "Quadratic Probing" w lp ls 5
+  'results/timesstr.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $3 : NaN) smooth unique title "Quadratic Probing" w lp ls 5, \
+  'results/timesstr.csv' using 1:(stringcolumn(2) eq "DoubleHashing" ? $3 : NaN) smooth unique title "Double Hashing" w lp ls 6
 
 
 
@@ -61,7 +64,8 @@ plot \
   'results/timesll.csv' using 1:(stringcolumn(2)eq "STD" ? $4 : NaN) smooth unique title "STD" w lp ls 2, \
   'results/timesll.csv' using 1:(stringcolumn(2) eq "Chaining" ? $4 : NaN) smooth unique title "Chaining" w lp ls 3, \
   'results/timesll.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $4 : NaN) smooth unique title "Linear Probing" w lp ls 4, \
-  'results/timesll.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $4 : NaN) smooth unique title "Quadratic Probing" w lp ls 5
+  'results/timesll.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $4 : NaN) smooth unique title "Quadratic Probing" w lp ls 5, \
+  'results/timesll.csv' using 1:(stringcolumn(2) eq "DoubleHashing" ? $4 : NaN) smooth unique title "Double Hashing" w lp ls 6
 
 
 set output 'results/spacehash2.png'
@@ -78,5 +82,6 @@ plot \
   'results/timesstr.csv' using 1:(stringcolumn(2)eq "STD" ? $4 : NaN) smooth unique title "STD" w lp ls 2, \
   'results/timesstr.csv' using 1:(stringcolumn(2) eq "Chaining" ? $4 : NaN) smooth unique title "Chaining" w lp ls 3, \
   'results/timesstr.csv' using 1:(stringcolumn(2) eq "LinearProbing" ? $4 : NaN) smooth unique title "Linear Probing" w lp ls 4, \
-  'results/timesstr.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $4 : NaN) smooth unique title "Quadratic Probing" w lp ls 5
+  'results/timesstr.csv' using 1:(stringcolumn(2) eq "QuadraticProbing" ? $4 : NaN) smooth unique title "Quadratic Probing" w lp ls 5, \
+  'results/timesstr.csv' using 1:(stringcolumn(2) eq "DoubleHashing" ? $4 : NaN) smooth unique title "Double Hashing" w lp ls 6
 
