@@ -1,6 +1,6 @@
 #include "Map.h"
 
-//HashMap implementado con DoubleHashing Probing
+//HashMap implementado con Double Hashing
 template<typename K>
 class DoubleHashingHashMap : public Map<K>{
 private:
@@ -11,7 +11,7 @@ private:
     }
     //Para la 2da funcion hash, usamos MAD con otro coeficiente, pero sumandole uno para asegurarnos de que la funcion pueda avanzar
     unsigned hash2(unsigned k){
-        return (k*p2 % M)+1;
+        return 1+(k*p2 % M);
     }
     //Para strings (user_screen_name), usamos acumulación polinomial y MAD
     unsigned hash(std::string ks){
@@ -137,34 +137,40 @@ public:
         Entry** oldArray = arr;
         unsigned oldCapacity = M;
 
+        // Aumentar la capacidad
         M *= 2;
-        n = 0;
-        int j=0;
+
+        // Crear el nuevo arreglo
         arr = new Entry*[M];
-        for (unsigned i = 0; i < M; ++i) {
+        for (unsigned i = 0; i < M; i++) {
             arr[i] = nullptr;
         }
-        //Para rellenar el nuevo array, replicamos como funcionaria insertar una a una las llaves de vuelta con double hashing
-        for (unsigned i = 0; i < oldCapacity; ++i) {
+
+        // Reiniciar el número de elementos
+        n = 0;
+
+        // Reinsertar todos los elementos
+        for (unsigned i = 0; i < oldCapacity; i++) {
             if (oldArray[i] != nullptr) {
                 Entry* entry = oldArray[i];
 
-                unsigned hash1 = hash(entry->key);
-                unsigned hash2 = hash2(entry->key);
-                unsigned pos = hash1;
-                while (arr[pos] != nullptr) {
-                    j++
-                    pos = (hash1 + j*hash2)%M
+                unsigned h1 = hash(entry->key);
+                unsigned h2 = hash2(entry->key);
+
+                for (unsigned j = 0; j < M; j++) {
+                    unsigned pos = (h1 + j * h2) % M;
+
+                    if (arr[pos] == nullptr) {
+                        arr[pos] = new Entry(entry->key, entry->value);
+                        n++;
+                        break;
+                    }
                 }
 
-                arr[pos] = new Entry(entry->key, entry->value);
-                ++n;
+                delete entry;
             }
         }
 
-        for (unsigned i = 0; i < oldCapacity; ++i) {
-            delete oldArray[i];
-        }
         delete[] oldArray;
     }
 
