@@ -9,9 +9,9 @@ private:
     unsigned hash(unsigned k){
         return k*p % M;
     }
-    //Para la 2da funcion hash, usamos MAD con otro coeficiente
+    //Para la 2da funcion hash, usamos MAD con otro coeficiente, pero sumandole uno para asegurarnos de que la funcion pueda avanzar
     unsigned hash2(unsigned k){
-        return k*p2 % M;
+        return (k*p2 % M)+1;
     }
     //Para strings (user_screen_name), usamos acumulación polinomial y MAD
     unsigned hash(std::string ks){
@@ -122,11 +122,11 @@ public:
             entrada = arr[lp_dest];
             //Crea la entrada en caso de que haya un puntero nulo, y devuelve cero
             if (entrada == nullptr){
-                return true;
+                return false;
             }
             //si es que la llave si esté almacenada, se devuelve el valor correspondiente
             if (entrada->key == key){
-                return false;
+                return true;
             }
         }
         //Si revisó todo el arreglo y no encuentra el valor correspondiente, es porque no está almacenado
@@ -139,19 +139,22 @@ public:
 
         M *= 2;
         n = 0;
-
+        int j=0;
         arr = new Entry*[M];
         for (unsigned i = 0; i < M; ++i) {
             arr[i] = nullptr;
         }
-
+        //Para rellenar el nuevo array, replicamos como funcionaria insertar una a una las llaves de vuelta con double hashing
         for (unsigned i = 0; i < oldCapacity; ++i) {
             if (oldArray[i] != nullptr) {
                 Entry* entry = oldArray[i];
 
-                unsigned pos = hash(entry->key);
+                unsigned hash1 = hash(entry->key);
+                unsigned hash2 = hash2(entry->key);
+                unsigned pos = hash1;
                 while (arr[pos] != nullptr) {
-                    pos = (pos + 1) % M;
+                    j++
+                    pos = (hash1 + j*hash2)%M
                 }
 
                 arr[pos] = new Entry(entry->key, entry->value);

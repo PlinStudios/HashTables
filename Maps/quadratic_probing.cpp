@@ -122,19 +122,27 @@ public:
 
         M *= 2;
         n = 0;
-
         arr = new Entry*[M];
+        int j=0;
+        long long upper_limit = nextPowerOf2(M);
         for (unsigned i = 0; i < M; ++i) {
             arr[i] = nullptr;
         }
 
+        //Para rellenar el nuevo array, replicamos como funcionaria insertar una a una las llaves de vuelta con quadratic probing de Geek4Geeks
         for (unsigned i = 0; i < oldCapacity; ++i) {
             if (oldArray[i] != nullptr) {
                 Entry* entry = oldArray[i];
 
                 unsigned pos = hash(entry->key);
-                while (arr[pos] != nullptr) {
-                    pos = (pos + 1) % M;
+                unsigned useful_pos = pos;
+                while (arr[useful_pos] != nullptr) {
+                    j++;
+                    useful_pos = (pos+(j+j*j)/2)%upper_limit;
+                    while (useful_pos>=M){         
+                        j++;
+                        useful_pos = (pos+(j+j*j)/2)%upper_limit;
+                    }
                 }
 
                 arr[pos] = new Entry(entry->key, entry->value);
