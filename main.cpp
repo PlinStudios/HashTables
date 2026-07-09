@@ -15,7 +15,7 @@
 #include "Maps/quadratic_probing.cpp"
 
 //cuantas veces se repite el experimento
-#define EXP_repeat 1
+#define EXP_repeat 20
 //cuantas veces se procesan los tweets
 #define EXP_count 19
 //cuantos tweets más se leen cada vez
@@ -35,14 +35,14 @@ inline void get_user(std::string& target, std::string& user_id, std::string& use
 
 #include <chrono>
 template<typename K>
-void Experiment(Map<K>& map, unsigned max_tweets){
+void Experiment(Map<K>& map, unsigned max_tweets, size_t mem_before){
     OpenFile();
 
     std::string user_id,user_screen_name;
     unsigned n_tweet = 0;
 
     auto start = std::chrono::high_resolution_clock::now();
-    size_t mem_before = memory_usage();
+    //size_t mem_before = memory_usage();
 
     while (ReadEntry(user_id,user_screen_name)){
         if (n_tweet>=max_tweets) break;
@@ -65,96 +65,117 @@ void Experiment(Map<K>& map, unsigned max_tweets){
 }
 
 int main(){
-    expfile = std::ofstream("times.csv");
+    OpenFile();
+
+    expfile = std::ofstream("results/timesll.csv");
     expfile << "n_tweet;estructura_de_datos;tiempo_de_ejecucion(us);memory_usage(B);load_factor" << std::endl;
 
     //probamos control
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             NullMap<long long>* control = new NullMap<long long>(EXP_reserve);
-            Experiment(*control,EXP_step*i);
+            Experiment(*control,EXP_step*i,mem_before);
             delete control;
         }
     }
     //probamos implementacion estandar
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             stdMap<long long>* standar = new stdMap<long long>(EXP_reserve);
-            Experiment(*standar,EXP_step*i);
+            Experiment(*standar,EXP_step*i,mem_before);
             delete standar;
         }
     }
     //probamos chaining
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             ChainHashMap<long long>* chain = new ChainHashMap<long long>(EXP_reserve);
-            Experiment(*chain,EXP_step*i);
+            Experiment(*chain,EXP_step*i,mem_before);
             delete chain;
         }
     }
     //probamos linear probing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             LinearProbingHashMap<long long>* line = new LinearProbingHashMap<long long>(EXP_reserve);
-            Experiment(*line,EXP_step*i);
+            Experiment(*line,EXP_step*i,mem_before);
             delete line;
         }
     }
     //probamos quadratic probing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             QuadraticProbingHashMap<long long>* quad = new QuadraticProbingHashMap<long long>(EXP_reserve);
-            Experiment(*quad,EXP_step*i);
+            Experiment(*quad,EXP_step*i,mem_before);
             delete quad;
         }
     }
 
 
 
-
+    //abrimos a un archivo distinto para pruebas en string
+    expfile.close();
+    expfile = std::ofstream("results/timesstr.csv");
+    expfile << "n_tweet;estructura_de_datos;tiempo_de_ejecucion(us);memory_usage(B);load_factor" << std::endl;
 
 
 
      //probamos control
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             NullMap<std::string>* control = new NullMap<std::string>(EXP_reserve);
-            Experiment(*control,EXP_step*i);
+            Experiment(*control,EXP_step*i,mem_before);
             delete control;
         }
     }
     //probamos implementacion estandar
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             stdMap<std::string>* standar = new stdMap<std::string>(EXP_reserve);
-            Experiment(*standar,EXP_step*i);
+            Experiment(*standar,EXP_step*i,mem_before);
             delete standar;
         }
     }
     //probamos chaining
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             ChainHashMap<std::string>* chain = new ChainHashMap<std::string>(EXP_reserve);
-            Experiment(*chain,EXP_step*i);
+            Experiment(*chain,EXP_step*i,mem_before);
             delete chain;
         }
     }
     //probamos linear probing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             LinearProbingHashMap<std::string>* line = new LinearProbingHashMap<std::string>(EXP_reserve);
-            Experiment(*line,EXP_step*i);
+            Experiment(*line,EXP_step*i,mem_before);
             delete line;
         }
     }
     //probamos quadratic probing
     for (int i=0; i<EXP_repeat; i++){
         for (unsigned i=1; i<=EXP_count; i++){
+            size_t mem_before = memory_usage();
             QuadraticProbingHashMap<std::string>* quad = new QuadraticProbingHashMap<std::string>(EXP_reserve);
-            Experiment(*quad,EXP_step*i);
+            Experiment(*quad,EXP_step*i,mem_before);
             delete quad;
         }
     }
 
+    expfile.close();
+
     return 0;
 }
+
+
+
+// to do: experimentos de creación, graficos con python o gnuplot control? dividir por 10000 paraver tiempo de uno
